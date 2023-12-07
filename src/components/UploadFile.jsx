@@ -1,9 +1,11 @@
-import React, { useEffect, useState, useMemo } from "react";
-import { styled } from "@mui/material/styles";
-import Button from "@mui/material/Button";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import readXlsxFile from "read-excel-file";
 import { Box } from "@mui/material";
+import Button from "@mui/material/Button";
+import { styled } from "@mui/material/styles";
+import React, { useContext, useEffect } from "react";
+import readXlsxFile from "read-excel-file";
+import excelContext from "../context/excelContext";
+import { ReportOfHours } from "./ReportOfHours";
 
 const VisuallyHiddenInput = styled("input")({
   clip: "rect(0 0 0 0)",
@@ -18,25 +20,11 @@ const VisuallyHiddenInput = styled("input")({
 });
 
 export const UploadFile = () => {
-  const listOfUsers = useMemo(
-    () => [
-      "Jay Parmar",
-      "Shete Roshan",
-      "Hariom Dubey",
-      "Priyanka Prajapati",
-      "Keyur Sachaniya",
-      "Ajay Dhandhukiya",
-      "Riddhi Makwana",
-      "Nikki  Bakshi",
-    ],
-    []
-  );
-  const [name, setName] = useState([]);
-  const [missingUsers, setMissingUsers] = useState([]);
+  const listUsersName = useContext(excelContext);
 
   const handleFileUpload = async (e) => {
-    setName([]);
-    setMissingUsers([]);
+    listUsersName.setNamesInFile([]);
+    listUsersName.setMissingUsers([]);
     if (e.target.files[0]) {
       try {
         const nameList = [];
@@ -44,26 +32,33 @@ export const UploadFile = () => {
           let tempName = [];
           for (let i = 1; i < rows.length; i++) {
             if (Date.parse(rows[i][0]) === Date.parse(rows[i - 1][0])) {
-              tempName.push(rows[i][3]);
+              tempName.push({ name: rows[i][3], hours: rows[i][7] });
               i === rows.length - 1 &&
-                nameList.push([{ name: tempName, date: rows[i][0] }]);
+                nameList.push([
+                  {
+                    name: tempName.map((item) => item.name),
+                    date: rows[i][0],
+                    hours: tempName.map((item) => item.hours),
+                  },
+                ]);
             } else {
               if (i === 1) {
-                tempName.push(rows[i][3]);
+                tempName.push({ name: rows[i][3], hours: rows[i][7] });
                 continue;
               }
               nameList.push([
                 {
-                  name: tempName,
+                  name: tempName.map((item) => item.name),
                   date: rows[i - 1][0],
+                  hours: tempName.map((item) => item.hours),
                 },
               ]);
               tempName = [];
-              tempName.push(rows[i][3]);
+              tempName.push({ name: rows[i][3], hours: rows[i][7] });
             }
           }
         });
-        setName([...nameList]);
+        listUsersName.setNamesInFile([...nameList]);
       } catch (error) {
         console.error("Error reading file:", error);
       }
@@ -71,9 +66,9 @@ export const UploadFile = () => {
   };
 
   useEffect(() => {
-    if (name.length) {
-      for (let user of listOfUsers) {
-        for (let item of name) {
+    if (listUsersName.namesInFile?.length) {
+      for (let user of listUsersName.listOfAllUsers) {
+        for (let item of listUsersName.namesInFile) {
           let userHasEntry = false;
           for (let data of item[0].name) {
             if (user.toLocaleLowerCase() === data.toLocaleLowerCase()) {
@@ -82,37 +77,44 @@ export const UploadFile = () => {
             }
           }
           if (!userHasEntry) {
-            missingUsers.push([{ name: user, date: item[0].date }]);
+            listUsersName.missingUsers.push([
+              { name: user, date: item[0].date },
+            ]);
           }
         }
       }
-      setMissingUsers([...missingUsers]);
+      listUsersName.setMissingUsers([...listUsersName.missingUsers]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [name, listOfUsers]);
+  }, [listUsersName.namesInFile, listUsersName.listOfAllUsers]);
+
+  console.log(listUsersName.namesInFile);
 
   return (
-    <Box sx={{ justifyContent: "center", textAlign: "center" }}>
-      <Button
-        component="label"
-        variant="contained"
-        startIcon={<CloudUploadIcon />}
-        onChange={handleFileUpload}
-      >
-        Upload file
-        <VisuallyHiddenInput type="file" accept=".xls, .xlsx" />
-      </Button>
-      {missingUsers.length > 0 ? (
-        missingUsers.map((item) => {
-          return (
-            <p>
-              {item[0].name} takes leave on the {item[0].date.toString()}.
-            </p>
-          );
-        })
-      ) : (
-        <p>Please Upload File!!</p>
-      )}
-    </Box>
+    <>
+      <Box sx={{ justifyContent: "center", textAlign: "center" }}>
+        <Button
+          component="label"
+          variant="contained"
+          startIcon={<CloudUploadIcon />}
+          onChange={handleFileUpload}
+        >
+          Upload file
+          <VisuallyHiddenInput type="file" accept=".xls, .xlsx" />
+        </Button>
+        {listUsersName.missingUsers.length > 0 ? (
+          listUsersName.missingUsers.map((item) => {
+            return (
+              <p>
+                {item[0].name} takes leave on the {item[0].date.toString()}.
+              </p>
+            );
+          })
+        ) : (
+          <p>Please Upload File!!</p>
+        )}
+      </Box>
+      {listUsersName.namesInFile.length > 0 && <ReportOfHours />}
+    </>
   );
 };
