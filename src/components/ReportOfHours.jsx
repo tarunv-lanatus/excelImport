@@ -51,7 +51,7 @@ export const ReportOfHours = () => {
         }
       }
       rowNames[dateFieldName] = valueOfhour === 0 ? "" : valueOfhour;
-      totalOfHoursInRow = totalOfHoursInRow + valueOfhour;
+      totalOfHoursInRow = Math.round(totalOfHoursInRow + valueOfhour);
     });
     rowNames["totalOfRow"] = totalOfHoursInRow;
     return rowNames;
@@ -66,7 +66,9 @@ export const ReportOfHours = () => {
   listUsersName.namesInFile?.forEach((data) => {
     let totalOfHoursInColumn = 0;
     for (let item in data[0].hours) {
-      totalOfHoursInColumn = totalOfHoursInColumn + data[0].hours[item];
+      totalOfHoursInColumn = Math.round(
+        totalOfHoursInColumn + data[0].hours[item]
+      );
     }
     lastRowForTotal[`date ${data[0].date}`] = totalOfHoursInColumn;
   });
@@ -79,7 +81,7 @@ export const ReportOfHours = () => {
   rows.push(lastRowForTotal);
 
   return (
-    <Box sx={{ height: 400, width: "100%" }}>
+    <Box sx={{ height: "auto", width: "100%" }}>
       <DataGrid
         rows={rows}
         columns={columns}
