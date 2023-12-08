@@ -67,7 +67,7 @@ export const UploadFile = () => {
 
   useEffect(() => {
     if (listUsersName.namesInFile?.length) {
-      for (let user of listUsersName.listOfAllUsers) {
+      for (let user of listUsersName.listOfAllUsers.data) {
         for (let item of listUsersName.namesInFile) {
           let userHasEntry = false;
           for (let data of item[0].name) {
@@ -86,7 +86,7 @@ export const UploadFile = () => {
       listUsersName.setMissingUsers([...listUsersName.missingUsers]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listUsersName.namesInFile, listUsersName.listOfAllUsers]);
+  }, [listUsersName.namesInFile, listUsersName.listOfAllUsers.data]);
 
   console.log(listUsersName.namesInFile);
 

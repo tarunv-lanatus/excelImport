@@ -33,7 +33,7 @@ export const ReportOfHours = () => {
     editable: false,
   });
 
-  const listForRows = listUsersName.listOfAllUsers?.map((item, index) => {
+  const listForRows = listUsersName.listOfAllUsers?.data.map((item, index) => {
     let totalOfHoursInRow = 0;
     const rowNames = {
       id: index,

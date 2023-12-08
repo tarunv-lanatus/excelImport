@@ -1,20 +1,15 @@
-import { useMemo, useState } from "react";
+import { useState, useMemo } from "react";
 import excelContext from "./excelContext";
 
 export const ContextProvider = (props) => {
-  const [listOfAllUsers] = useState([
-    "Jay Parmar",
-    "Shete Roshan",
-    "Hariom Dubey",
-    "Priyanka Prajapati",
-    "Keyur Sachaniya",
-    "Ajay Dhandhukiya",
-    "Riddhi Makwana",
-    "Nikki  Bakshi",
-  ]);
+  const listOfAllUsers = useMemo(
+    () => JSON.parse(localStorage.getItem("users")),
+    []
+  );
   const [namesInFile, setNamesInFile] = useState([]);
   const [missingUsers, setMissingUsers] = useState([]);
-  const [HoursOfUsers, setHoursOfUsers] = useState([]);
+
+  console.log({ listOfAllUsers });
 
   return (
     <excelContext.Provider
@@ -24,8 +19,6 @@ export const ContextProvider = (props) => {
         setNamesInFile,
         missingUsers,
         setMissingUsers,
-        HoursOfUsers,
-        setHoursOfUsers,
       }}
     >
       {props.children}
