@@ -9,8 +9,6 @@ export const ContextProvider = (props) => {
   const [namesInFile, setNamesInFile] = useState([]);
   const [missingUsers, setMissingUsers] = useState([]);
 
-  console.log({ listOfAllUsers });
-
   return (
     <excelContext.Provider
       value={{

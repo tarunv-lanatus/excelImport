@@ -88,8 +88,6 @@ export const UploadFile = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listUsersName.namesInFile, listUsersName.listOfAllUsers.data]);
 
-  console.log(listUsersName.namesInFile);
-
   return (
     <>
       <Box sx={{ justifyContent: "center", textAlign: "center" }}>
