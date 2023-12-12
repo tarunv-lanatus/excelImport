@@ -44,10 +44,7 @@ export const ReportOfHours = () => {
       let valueOfhour = 0;
       for (let i = 0; i < data[0].name.length; i++) {
         if (item === data[0].name[i]) {
-          valueOfhour = data[0].hours[i];
-          break;
-        } else {
-          valueOfhour = 0;
+          valueOfhour = valueOfhour + data[0].hours[i];
         }
       }
       rowNames[dateFieldName] = valueOfhour === 0 ? "" : valueOfhour;
