@@ -86,7 +86,7 @@ export const ReportOfHours = () => {
         pageSizeOptions={[5]}
         disableRowSelectionOnClick
       />
-      <ExcelExport excelData={rows} fileName={"file export"} />
+      <ExcelExport excelData={rows} fileName={"hour_report_list"} />
     </Box>
   );
 };
