@@ -2,6 +2,7 @@ import Box from "@mui/material/Box";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useContext } from "react";
 import excelContext from "../context/excelContext";
+import { ExcelExport } from "./ExcelExport";
 
 export const ReportOfHours = () => {
   const listUsersName = useContext(excelContext);
@@ -27,7 +28,7 @@ export const ReportOfHours = () => {
 
   columns.push(...listOfDates);
   columns.push({
-    field: "totalOfRow",
+    field: "Grand Total",
     headerName: "Grand Total",
     width: 150,
     editable: false,
@@ -50,7 +51,7 @@ export const ReportOfHours = () => {
       rowNames[dateFieldName] = valueOfhour === 0 ? "" : valueOfhour;
       totalOfHoursInRow = Math.round(totalOfHoursInRow + valueOfhour);
     });
-    rowNames["totalOfRow"] = totalOfHoursInRow;
+    rowNames["Grand Total"] = totalOfHoursInRow;
     return rowNames;
   });
 
@@ -71,10 +72,10 @@ export const ReportOfHours = () => {
   });
 
   for (let item of rows) {
-    totalHours = totalHours + item.totalOfRow;
+    totalHours = totalHours + item["Grand Total"];
   }
 
-  lastRowForTotal["totalOfRow"] = totalHours;
+  lastRowForTotal["Grand Total"] = totalHours;
   rows.push(lastRowForTotal);
 
   return (
@@ -85,6 +86,7 @@ export const ReportOfHours = () => {
         pageSizeOptions={[5]}
         disableRowSelectionOnClick
       />
+      <ExcelExport excelData={rows} fileName={"file export"} />
     </Box>
   );
 };
