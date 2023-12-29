@@ -32,18 +32,29 @@ export const UploadFile = () => {
           let tempName = [];
           for (let i = 1; i < rows.length; i++) {
             if (Date.parse(rows[i][0]) === Date.parse(rows[i - 1][0])) {
-              tempName.push({ name: rows[i][3], hours: rows[i][7] });
-              i === rows.length - 1 &&
-                nameList.push([
-                  {
-                    name: tempName.map((item) => item.name),
-                    date: rows[i][0],
-                    hours: tempName.map((item) => item.hours),
-                  },
-                ]);
+              if (
+                rows[i][7] !== null &&
+                rows[i][7] !== 0 &&
+                typeof rows[i][7] !== "string"
+              ) {
+                tempName.push({ name: rows[i][3], hours: rows[i][7] });
+                i === rows.length - 1 &&
+                  nameList.push([
+                    {
+                      name: tempName.map((item) => item.name),
+                      date: rows[i][0],
+                      hours: tempName.map((item) => item.hours),
+                    },
+                  ]);
+              }
             } else {
               if (i === 1) {
-                tempName.push({ name: rows[i][3], hours: rows[i][7] });
+                if (
+                  (rows[i][7] !== null && rows[i][7] !== 0) ||
+                  typeof rows[i][7] !== "string"
+                ) {
+                  tempName.push({ name: rows[i][3], hours: rows[i][7] });
+                }
                 continue;
               }
               nameList.push([
@@ -54,7 +65,13 @@ export const UploadFile = () => {
                 },
               ]);
               tempName = [];
-              tempName.push({ name: rows[i][3], hours: rows[i][7] });
+              if (
+                rows[i][7] !== null &&
+                rows[i][7] !== 0 &&
+                typeof rows[i][7] !== "string"
+              ) {
+                tempName.push({ name: rows[i][3], hours: rows[i][7] });
+              }
             }
           }
         });
