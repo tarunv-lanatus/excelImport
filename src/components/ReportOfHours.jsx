@@ -29,7 +29,9 @@ export const ReportOfHours = () => {
     return null;
   });
 
-  columns.push(...listOfDates);
+  if (listOfDates?.length) {
+    columns.push(...listOfDates);
+  }
   columns.push({
     field: "Grand Total",
     headerName: "Grand Total",
@@ -37,7 +39,7 @@ export const ReportOfHours = () => {
     editable: false,
   });
 
-  const listForRows = listUsersName.listOfAllUsers?.data.map((item, index) => {
+  const listForRows = listUsersName.listOfAllUsers?.data?.map((item, index) => {
     let totalOfHoursInRow = 0;
     const rowNames = {
       id: index,

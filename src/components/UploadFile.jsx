@@ -30,7 +30,7 @@ export const UploadFile = () => {
         const nameList = [];
         await readXlsxFile(e.target.files[0]).then((rows) => {
           let tempName = [];
-          for (let i = 1; i < rows.length; i++) {
+          for (let i = 1; i < rows?.length; i++) {
             if (Date.parse(rows[i][0]) === Date.parse(rows[i - 1][0])) {
               if (
                 rows[i][7] !== null &&
@@ -41,9 +41,9 @@ export const UploadFile = () => {
                 i === rows.length - 1 &&
                   nameList.push([
                     {
-                      name: tempName.map((item) => item.name),
+                      name: tempName?.map((item) => item.name),
                       date: rows[i][0],
-                      hours: tempName.map((item) => item.hours),
+                      hours: tempName?.map((item) => item.hours),
                     },
                   ]);
               }
@@ -59,9 +59,9 @@ export const UploadFile = () => {
               }
               nameList.push([
                 {
-                  name: tempName.map((item) => item.name),
+                  name: tempName?.map((item) => item.name),
                   date: rows[i - 1][0],
-                  hours: tempName.map((item) => item.hours),
+                  hours: tempName?.map((item) => item.hours),
                 },
               ]);
               tempName = [];
@@ -75,7 +75,7 @@ export const UploadFile = () => {
             }
           }
         });
-        listUsersName.setNamesInFile([...nameList]);
+        if (nameList?.length) listUsersName.setNamesInFile([...nameList]);
       } catch (error) {
         console.error("Error reading file:", error);
       }
@@ -84,7 +84,7 @@ export const UploadFile = () => {
 
   useEffect(() => {
     if (listUsersName.namesInFile?.length) {
-      for (let user of listUsersName.listOfAllUsers.data) {
+      for (let user of listUsersName.listOfAllUsers?.data) {
         for (let item of listUsersName.namesInFile) {
           let userHasEntry = false;
           for (let data of item[0].name) {
@@ -117,8 +117,8 @@ export const UploadFile = () => {
           Upload file
           <VisuallyHiddenInput type="file" accept=".xls, .xlsx" />
         </Button>
-        {listUsersName.missingUsers.length > 0 ? (
-          listUsersName.missingUsers.map((item) => {
+        {listUsersName.missingUsers?.length > 0 ? (
+          listUsersName.missingUsers?.map((item) => {
             return (
               <p>
                 {item[0].name} takes leave on the {item[0].date.toString()}.
