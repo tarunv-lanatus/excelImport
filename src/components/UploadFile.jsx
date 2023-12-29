@@ -103,7 +103,7 @@ export const UploadFile = () => {
       listUsersName.setMissingUsers([...listUsersName.missingUsers]);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [listUsersName.namesInFile, listUsersName.listOfAllUsers.data]);
+  }, [listUsersName?.namesInFile, listUsersName?.listOfAllUsers?.data]);
 
   return (
     <>
