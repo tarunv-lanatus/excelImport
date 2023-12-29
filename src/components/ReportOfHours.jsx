@@ -58,7 +58,7 @@ export const ReportOfHours = () => {
     return rowNames;
   });
 
-  if (listForRows.length) {
+  if (listForRows?.length) {
     rows.push(...listForRows);
   }
 
