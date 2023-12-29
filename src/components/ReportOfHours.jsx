@@ -58,7 +58,9 @@ export const ReportOfHours = () => {
     return rowNames;
   });
 
-  rows.push(...listForRows);
+  if (listForRows.length) {
+    rows.push(...listForRows);
+  }
 
   const lastRowForTotal = {
     id: rows.length,
