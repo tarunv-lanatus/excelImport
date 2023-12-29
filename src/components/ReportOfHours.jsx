@@ -18,12 +18,15 @@ export const ReportOfHours = () => {
 
   const rows = [];
   const listOfDates = listUsersName.namesInFile?.map((item) => {
-    return {
-      field: `date ${item[0].date}`,
-      headerName: new Date(item[0].date).toLocaleDateString("en-GB"),
-      width: 150,
-      editable: false,
-    };
+    if (item && item[0] && item[0].date) {
+      return {
+        field: `date ${item[0].date}`,
+        headerName: new Date(item[0].date).toLocaleDateString("en-GB"),
+        width: 150,
+        editable: false,
+      };
+    }
+    return null;
   });
 
   columns.push(...listOfDates);
