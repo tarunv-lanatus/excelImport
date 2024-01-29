@@ -160,8 +160,8 @@ export const UploadFile = () => {
                 <Grid container display={"flex"} px={40} py={0.5} key={index}>
                   <Grid item xs={8}>
                     <p>
-                      {item[0].name} takes leave on the
-                      {item[0].date.toString()}.
+                      {item[0].name} takes leave on the &nbsp;
+                      {new Date(item[0].date).toDateString()}
                     </p>
                   </Grid>
                   <Grid xs={4}>
