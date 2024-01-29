@@ -16,7 +16,7 @@ export const ReportOfHours = () => {
     },
   ];
 
-  const rows = [];
+  let rows = [];
   const listOfDates = listUsersName.namesInFile?.map((item) => {
     if (item && item[0] && item[0].date) {
       return {
@@ -45,17 +45,41 @@ export const ReportOfHours = () => {
       id: index,
       rowLabels: item,
     };
+
     listUsersName.namesInFile?.forEach((data) => {
       const dateFieldName = `date ${data[0].date}`;
-      let valueOfhour = 0;
-      for (let i = 0; i < data[0].name.length; i++) {
-        if (item === data[0].name[i]) {
-          valueOfhour = valueOfhour + data[0].hours[i];
+      let valueOfHour = 0;
+      const convertedDate =
+        new Date(data[0].date).toISOString().split("T")[0] + "T00:00:00.000Z";
+
+      const approvedItem =
+        JSON.parse(localStorage.getItem("approvedItems")) || [];
+      const matchingItem = approvedItem.find(
+        (approved) => approved.date === convertedDate && approved.name === item
+      );
+
+      if (matchingItem) {
+        valueOfHour = "on Leave";
+      } else {
+        const index = data[0].name.findIndex((name) => name === item);
+
+        if (index !== -1) {
+          if (!isNaN(parseFloat(data[0].hours[index]))) {
+            valueOfHour = valueOfHour + parseFloat(data[0].hours[index]);
+          } else {
+            valueOfHour = "on Leave";
+          }
         }
       }
-      rowNames[dateFieldName] = valueOfhour === 0 ? "" : valueOfhour;
-      totalOfHoursInRow = Math.round(totalOfHoursInRow + valueOfhour);
+
+      rowNames[dateFieldName] = valueOfHour;
+
+      totalOfHoursInRow = Math.round(
+        totalOfHoursInRow +
+          (valueOfHour === "on Leave" ? 0.0 : parseFloat(valueOfHour))
+      );
     });
+
     rowNames["Grand Total"] = totalOfHoursInRow;
     return rowNames;
   });
@@ -72,7 +96,8 @@ export const ReportOfHours = () => {
     let totalOfHoursInColumn = 0;
     for (let item in data[0].hours) {
       totalOfHoursInColumn = Math.round(
-        totalOfHoursInColumn + data[0].hours[item]
+        totalOfHoursInColumn +
+          (data[0].hours[item] === "on Leave" ? 0.0 : data[0].hours[item])
       );
     }
     lastRowForTotal[`date ${data[0].date}`] = totalOfHoursInColumn;
@@ -83,6 +108,7 @@ export const ReportOfHours = () => {
   }
 
   lastRowForTotal["Grand Total"] = totalHours;
+
   rows.push(lastRowForTotal);
 
   return (

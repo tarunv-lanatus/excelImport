@@ -1,5 +1,5 @@
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
-import { Box } from "@mui/material";
+import { Box, Grid } from "@mui/material";
 import Button from "@mui/material/Button";
 import { styled } from "@mui/material/styles";
 import React, { useContext, useEffect } from "react";
@@ -83,8 +83,8 @@ export const UploadFile = () => {
   };
 
   useEffect(() => {
-    if (listUsersName.namesInFile?.length) {
-      for (let user of listUsersName.listOfAllUsers?.data) {
+    if (listUsersName?.namesInFile?.length) {
+      for (let user of listUsersName?.listOfAllUsers?.data || []) {
         for (let item of listUsersName.namesInFile) {
           let userHasEntry = false;
           for (let data of item[0].name) {
@@ -104,6 +104,41 @@ export const UploadFile = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [listUsersName?.namesInFile, listUsersName?.listOfAllUsers?.data]);
+  const approveLeave = (item) => {
+    listUsersName.namesInFile.map((entry) => {
+      if (entry[0].date.toString() === item[0].date.toString()) {
+        entry[0].name.push(item[0].name);
+        entry[0].hours.push("on Leave");
+
+        listUsersName.setMissingUsers((prevMissingUsers) =>
+          prevMissingUsers.filter(
+            (missingUser) =>
+              missingUser[0].name !== item[0].name ||
+              missingUser[0].date !== item[0].date
+          )
+        );
+        const approvedItems =
+          JSON.parse(localStorage.getItem("approvedItems")) || [];
+        approvedItems.push({ name: item[0].name, date: item[0].date });
+        localStorage.setItem("approvedItems", JSON.stringify(approvedItems));
+      }
+      return entry;
+    });
+  };
+  const checkIfAlreadyApproved = (user) => {
+    const approvedItemsString = localStorage.getItem("approvedItems");
+
+    const approvedItems = JSON.parse(approvedItemsString) || [];
+    return approvedItems.some((approvedItem) => {
+      const convertedDate =
+        new Date(user[0].date).toISOString().split("T")[0] + "T00:00:00.000Z";
+
+      return (
+        approvedItem.name === user[0].name &&
+        approvedItem.date === convertedDate
+      );
+    });
+  };
 
   return (
     <>
@@ -117,13 +152,31 @@ export const UploadFile = () => {
           Upload file
           <VisuallyHiddenInput type="file" accept=".xls, .xlsx" />
         </Button>
-        {listUsersName.missingUsers?.length > 0 ? (
-          listUsersName.missingUsers?.map((item) => {
-            return (
-              <p>
-                {item[0].name} takes leave on the {item[0].date.toString()}.
-              </p>
-            );
+        {listUsersName?.missingUsers?.length > 0 ? (
+          listUsersName?.missingUsers?.map((item, index) => {
+            const isAlreadyApproved = checkIfAlreadyApproved(item);
+            if (!isAlreadyApproved) {
+              return (
+                <Grid container display={"flex"} px={40} py={0.5} key={index}>
+                  <Grid item xs={8}>
+                    <p>
+                      {item[0].name} takes leave on the
+                      {item[0].date.toString()}.
+                    </p>
+                  </Grid>
+                  <Grid xs={4}>
+                    <Button
+                      variant="contained"
+                      onClick={() => approveLeave(item)}
+                    >
+                      Approve
+                    </Button>
+                  </Grid>
+                </Grid>
+              );
+            } else {
+              return null;
+            }
           })
         ) : (
           <p>Please Upload File!!</p>
