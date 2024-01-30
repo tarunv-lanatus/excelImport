@@ -33,6 +33,10 @@ export const ReportOfHours = () => {
             backgroundColor = "red";
             width = 150;
             color = "white";
+          } else if (valueOfHour === "on Leave") {
+            backgroundColor = "green";
+            width = 150;
+            color = "white";
           }
           return (
             <div
