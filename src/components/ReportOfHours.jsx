@@ -24,6 +24,33 @@ export const ReportOfHours = () => {
         headerName: new Date(item[0].date).toLocaleDateString("en-GB"),
         width: 150,
         editable: false,
+        renderCell: (params) => {
+          const valueOfHour = params.row[`date ${item[0].date}`];
+          let backgroundColor = "";
+          let width = "";
+          let color = "";
+          if (valueOfHour === 0) {
+            backgroundColor = "red";
+            width = 150;
+            color = "white";
+          } else if (valueOfHour === "on Leave") {
+            backgroundColor = "green";
+            width = 150;
+            color = "white";
+          }
+          return (
+            <div
+              style={{
+                backgroundColor,
+                width,
+                color,
+                textAlign: "center",
+              }}
+            >
+              {valueOfHour}
+            </div>
+          );
+        },
       };
     }
     return null;
