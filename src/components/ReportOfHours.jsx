@@ -26,7 +26,6 @@ export const ReportOfHours = () => {
         editable: false,
         renderCell: (params) => {
           const valueOfHour = params.row[`date ${item[0].date}`];
-          console.log(valueOfHour, "value");
           let backgroundColor = "";
           let width = "";
           let color = "";
