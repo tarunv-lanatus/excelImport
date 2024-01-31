@@ -3,12 +3,36 @@ import { saveAs } from "file-saver";
 import XLSX from "xlsx-js-style";
 
 export const ExcelExport = ({ excelData, fileName }) => {
+  const adjustedExcelData = excelData.map((item, index) => ({
+    ...item,
+    id: index + 1,
+  }));
   const fileType =
     "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
   const fileExtension = ".xlsx";
 
   const exportToExcel = async () => {
-    const ws = XLSX.utils.json_to_sheet(excelData, { cellStyles: true });
+    const ws = XLSX.utils.json_to_sheet(adjustedExcelData, {
+      cellStyles: true,
+    });
+
+    const styleForOnLeave = {
+      fill: {
+        fgColor: { rgb: "008000" },
+      },
+      font: {
+        color: { rgb: "FFFFFF" },
+      },
+    };
+
+    const styleForNull = {
+      fill: {
+        fgColor: { rgb: "ff0000" },
+      },
+      font: {
+        color: { rgb: "FFFFFF" },
+      },
+    };
 
     XLSX.utils.sheet_to_json(ws, { header: 1 }).forEach((row, rowIndex) => {
       row.forEach((cell, colIndex) => {
@@ -30,6 +54,11 @@ export const ExcelExport = ({ excelData, fileName }) => {
               right: { style: "thin", color: { rgb: "000000" } },
             },
           };
+        }
+        if (cell === 0 && row[0] !== 0) {
+          cellData.s = styleForNull;
+        } else if (cell === "on Leave") {
+          cellData.s = styleForOnLeave;
         }
       });
     });
