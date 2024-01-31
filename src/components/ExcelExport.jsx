@@ -55,7 +55,7 @@ export const ExcelExport = ({ excelData, fileName }) => {
             },
           };
         }
-        if (cell === 0 && row[0] !== 0) {
+        if (cell === 0) {
           cellData.s = styleForNull;
         } else if (cell === "on Leave") {
           cellData.s = styleForOnLeave;
